@@ -1,6 +1,6 @@
 // Name: selectionsort.c
 // Author: Will St. Onge
-// Description: Selection sort algorithm implemented with x86 assembly
+// Description: Selection sort algorithm implemented with x86 inline assembly
 
 #include <stdio.h>
 
@@ -10,25 +10,6 @@ int main()
 	int lengths = 40;
 
 	int min, minpos, i = 0, j, temp;
-
-	/*
-	for (i = 0; i < length - 1; i++)
-	{
-		min = data[i];
-		minpos = i;
-		for (j = i + 1; j < length; j++)
-		{
-			if (data[j] < data[minpos])
-			{
-				min = data[j];
-				minpos = j;
-			}
-		}
-		temp = data[i];
-		data[i] = data[minpos];
-		data[minpos] = temp;
-	}
-	*/
 
 	__asm {
 	outer:								; Outer for loop (first part)
@@ -40,17 +21,18 @@ int main()
 
 	inner:								; Inner for loop
 		mov dword ptr[j], eax			; j = eax (next element in array)
-		mov ebx, data[eax]				; ebx = data[j]
-		mov ecx, minpos					; ecx = minpos
-		cmp ebx, data[ecx]				; data[j] < data[minpos]
+		mov ebx, data[eax]				; if(data[j] < data[minpos])
+		mov ecx, minpos
+		cmp ebx, data[ecx]
 		jge outer_l						; if this above condition is true, skip the stuff in the if condition
 		mov min, ebx					; min = data[j]
 		mov minpos, eax					; minpos = j
 
-	outer_l:							; Swapping and continuing the loop or breaking
+	outer_l:							; Swapping and continuing or stopping the loop if the sort is complete
 		add eax, 4						; j++ (for loop increment)
 		cmp eax, lengths				; Make sure j is less than the length of the array
 		jl inner
+										; Swapping indices min and i's values
 		mov edx, i						; temp = data[i]
 		mov ecx, data[edx]
 		mov dword ptr[temp], ecx
@@ -61,13 +43,17 @@ int main()
 		mov ecx, temp					; data[minpos] = temp
 		mov edx, minpos
 		mov data[edx], ecx
+
 		mov edx, i						; i++ (for loop increment)
 		add edx, 4
 		mov i, edx
+		add edx, 4
 		cmp edx, lengths				; Make sure i is less than the length of the array
 		jl outer
 	}
 
-	for (int n = 0; n < 10; n++)
+
+	// Print out the values of the array
+	for (int n = 0; n < lengths / 4; n++)
 		printf("%d ", data[n]);
 }
