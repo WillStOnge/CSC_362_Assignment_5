@@ -7,7 +7,7 @@
 int main()
 {
 	int data[] = { 5, 8, 9, 4, 2, 1, 3, 6, 10, 7 };
-	int lengths = 40;
+	int lengths = sizeof(data);
 
 	int min, minpos, i = 0, j, temp;
 
