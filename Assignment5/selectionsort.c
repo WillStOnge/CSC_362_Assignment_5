@@ -14,16 +14,14 @@ int main()
 	int lengths = sizeof(data);
 	// Loop expressions (inner and outer).
 	int i, j;
-	// Smallest number in the to be sorted array
-	int min;
-	// Index in the array for swapping.
-	int minpos;
+	// Smallest number in the to be sorted array and its index in the array.
+	int min, minpos;
 
 	__asm {
-		mov eax, 0						// Initialize the loop expression to 0 to start the loop
+		mov eax, 0						// Initialize the loop expression to 0 to start the loop.
 		mov i, eax
 	outer:								
-		mov eax, i						// Move the loop expression into eax so we can cmp and add
+		mov eax, i						// Move the loop expression into eax so we can cmp and add.
 		mov minpos, eax					// Set minpos equal to i and min equal to the element at i so we have base values for the inner loop.
 		mov ebx, data[eax]				
 		mov min, ebx
@@ -40,7 +38,7 @@ int main()
 		add eax, 4						// Increment j so we can test the next element.
 		cmp eax, lengths				// If j is less than the length of the area, continue the loop.
 		jl inner			
-		mov edx, i						// Swaps elements at indices i and minpos. Since minpos contains the current smaller element in the range and i is the first unsort element.
+		mov edx, i						// Swaps elements at indices i and minpos. Since minpos contains the current smaller element in the range and i is the first unsort element. Uses ecx as a temp variable for the swap.
 		mov ebx, data[edx]
 		mov edx, minpos					
 		mov ecx, data[edx]
@@ -55,7 +53,7 @@ int main()
 		cmp edx, lengths				
 		jl outer
 	}
-	// Print out the values of the sorted array
+	// Print out the values of the sorted array.
 	for (int n = 0; n < lengths / 4; n++)
 		printf("%d ", data[n]);
 }
